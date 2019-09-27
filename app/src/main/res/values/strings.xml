@@ -13,4 +13,8 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="text_init">Новые принятые инициативы</string>
+    <string name="init_name">Имя инициативы</string>
+    <string name="init_new_name">Имя инициативы</string>
+    <string name="init_new_desc">Осуществить сбор мнений внешней аудитории об инициативе</string>
 </resources>
