@@ -2,15 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="180dp"
-    android:orientation="vertical">
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginStart="15dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginEnd="30dp"
+    android:layout_marginBottom="30dp"
+    android:orientation="vertical"
+    android:background="@drawable/splitline">>
 
     <TextView
         android:id="@+id/newName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         android:text="@string/init_new_name"
         android:textSize="24sp" />
@@ -19,8 +26,8 @@
         android:id="@+id/newDescr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:text="@string/init_new_desc"
         android:textSize="18sp" />
 </LinearLayout>
