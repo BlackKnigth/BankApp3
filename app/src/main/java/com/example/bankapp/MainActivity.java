@@ -1,5 +1,6 @@
 package com.example.bankapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -18,11 +19,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    List<ClassOldInit> OldList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,38 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Получить список старых инициатив
+        final RecyclerView oldRecyclerView =  findViewById(R.id.recyclerOld);
+        OldList.add(new ClassOldInit(1, "Инициатива 1", "Описание инициативы 1"));
+        OldList.add(new ClassOldInit(1, "Инициатива 2", "Описание инициативы 2"));
+        OldList.add(new ClassOldInit(1, "Инициатива 3", "Описание инициативы 3"));
+        InitAdapter Adapter = new InitAdapter(this, OldList, true);
+        oldRecyclerView.setAdapter(Adapter);
+        oldRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this) {
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            }
+
+            @Override
+            public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
+
+                ClassOldInit Init = OldList.get(position);
+
+                Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
+                intent.putExtra(EXTRA_MESSAGE, Init.getId());
+                intent.putExtra(EXTRA_MESSAGE2, Init.getUsername());
+                intent.putExtra(EXTRA_MESSAGE3, );
+                startActivity(intent);
+            }
+        });
+
+        final RecyclerView newRecyclerView =  findViewById(R.id.recyclerNew);
+
+        //Получить список новых инициатив
+        List
+        CatAdapter = new InitAdapter(this, UserList);
+        oldRecyclerView.setAdapter(CatAdapter);
     }
 
     @Override
@@ -85,17 +123,21 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
+        if (id == R.id.nav_main) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_history) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_about) {
 
-        } else if (id == R.id.nav_tools) {
+        } else if (id == R.id.nav_exit) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_help) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_feedback) {
+
+        } else if (id == R.id.nav_confident) {
+
+        } else if (id == R.id.nav_policy) {
 
         }
 

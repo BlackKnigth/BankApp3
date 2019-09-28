@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/newName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -16,7 +16,7 @@
         android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/newDescr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
