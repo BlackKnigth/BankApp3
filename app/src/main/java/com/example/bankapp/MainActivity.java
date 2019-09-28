@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity
     List<ClassOldInit> OldList = new ArrayList<>();
     List<ClassNewInit> NewList = new ArrayList<>();
     float startX = 0.f;
+    float oldX = 0.f;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity
         final InitOldAdapter Adapter = new InitOldAdapter(this, OldList);
 
         oldRecyclerView.setAdapter(Adapter); //Заполнение
-        oldRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+        oldRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         oldRecyclerView.addOnItemTouchListener(new RecyclerOldClickListener(this) { //Проверка свайпа
 
@@ -96,34 +98,42 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                switch (e.getAction()) {
-                    case MotionEvent.ACTION_DOWN: //первое касание
-                        startX = e.getX();
-                        break;
-                    case MotionEvent.ACTION_UP: //отпускание
-                        float stopX = e.getX();
-                        if (stopX - startX > 30.f || startX - stopX > 30.f) {
-                            View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
-                            if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
-                                int clickedPosition = rv.getChildAdapterPosition(clickedChild);
-                                if (clickedPosition != RecyclerView.NO_POSITION) {
-                                    onItemSwipe(rv, clickedChild, clickedPosition,true);
-                                    return true;
+                View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
+                float stopX = e.getX();
+                if (clickedChild != null)
+                    switch (e.getAction()) {
+                        case MotionEvent.ACTION_DOWN: //первое касание
+                            oldX = clickedChild.getX();
+                            startX = e.getX();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+
+                            clickedChild.setAlpha(1 - Math.abs(startX - e.getX()) / 250);
+                            clickedChild.setX(oldX - (startX - e.getX()));
+                            break;
+                        case MotionEvent.ACTION_UP: //отпускание
+                            int clickedPosition = rv.getChildAdapterPosition(clickedChild);
+                            if(clickedChild.getX()<-250)
+                                onItemSwipe(rv, clickedChild, clickedPosition, true);
+                            clickedChild.setX(oldX);
+                            clickedChild.setAlpha(1);
+                            if (stopX - startX > 250.f || startX - stopX > 250.f) {
+                                if (!clickedChild.dispatchTouchEvent(e)) {
+                                    if (clickedPosition != RecyclerView.NO_POSITION) {
+                                        onItemSwipe(rv, clickedChild, clickedPosition, true);
+                                        return true;
+                                    }
+                                }
+                            } else if (startX == stopX) {
+                                if (!clickedChild.dispatchTouchEvent(e)) {
+                                    if (clickedPosition != RecyclerView.NO_POSITION) {
+                                        onItemSwipe(rv, clickedChild, clickedPosition, false);
+                                        return true;
+                                    }
                                 }
                             }
-                        } else
-                        if (startX == stopX) {
-                            View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
-                            if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
-                                int clickedPosition = rv.getChildAdapterPosition(clickedChild);
-                                if (clickedPosition != RecyclerView.NO_POSITION) {
-                                    onItemSwipe(rv, clickedChild, clickedPosition,false);
-                                    return true;
-                                }
-                            }
-                        }
-                        break;
-                }
+                            break;
+                    }
                 return false;
             }
 
@@ -133,8 +143,7 @@ public class MainActivity extends AppCompatActivity
                     Adapter2.notifyItemRemoved(position);
                     NewList.remove(position);
                     //Удалить из бд
-                } else
-                {
+                } else {
 //                    ClassNewInit Content = NewList.get(position);
 //
 //                    Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
