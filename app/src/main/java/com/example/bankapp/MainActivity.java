@@ -1,29 +1,22 @@
 package com.example.bankapp;
 
-import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
-import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-
-import android.view.MenuItem;
-
-import com.google.android.material.navigation.NavigationView;
-
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.Menu;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         final InitOldAdapter Adapter = new InitOldAdapter(this, OldList);
 
         oldRecyclerView.setAdapter(Adapter); //Заполнение
-        oldRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+        oldRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         oldRecyclerView.addOnItemTouchListener(new RecyclerOldClickListener(this) { //Проверка свайпа
             @Override
@@ -84,20 +77,19 @@ public class MainActivity extends AppCompatActivity
                             if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
                                 int clickedPosition = rv.getChildAdapterPosition(clickedChild);
                                 if (clickedPosition != RecyclerView.NO_POSITION) {
-                                    onItemSwipe(rv, clickedChild, clickedPosition,true);
+                                    onItemSwipe(rv, clickedChild, clickedPosition, true);
                                     return true;
                                 }
                             }
-                        } else
-                            if (startX == stopX) {
-                                View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
-                                if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
-                                    int clickedPosition = rv.getChildAdapterPosition(clickedChild);
-                                    if (clickedPosition != RecyclerView.NO_POSITION) {
-                                        onItemSwipe(rv, clickedChild, clickedPosition,false);
-                                        return true;
-                                    }
+                        } else if (startX == stopX) {
+                            View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
+                            if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
+                                int clickedPosition = rv.getChildAdapterPosition(clickedChild);
+                                if (clickedPosition != RecyclerView.NO_POSITION) {
+                                    onItemSwipe(rv, clickedChild, clickedPosition, false);
+                                    return true;
                                 }
+                            }
                         }
                         break;
                 }
@@ -110,8 +102,7 @@ public class MainActivity extends AppCompatActivity
                     Adapter.notifyItemRemoved(position);
                     OldList.remove(position);
                     //Удалить из бд
-                } else
-                {
+                } else {
 //                    ClassNewInit Content = NewList.get(position);
 //
 //                    Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
