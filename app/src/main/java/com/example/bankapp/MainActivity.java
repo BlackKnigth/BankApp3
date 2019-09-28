@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
 //                startActivity(intent);
             }
         });
-
+///1243123465789
         NewList.add(new ClassNewInit(1, "Инициатива 1", "Описание инициативы 1"));
         NewList.add(new ClassNewInit(2, "Инициатива 2", "Описание инициативы 2"));
         NewList.add(new ClassNewInit(3, "Инициатива 3", "Описание инициативы 3"));
