@@ -1,5 +1,6 @@
 package com.example.bankapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,12 +36,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //Group group = findViewById(R.id.group_top);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(new Intent(view.getContext(), ChatActivity.class));
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity
                             break;
                         case MotionEvent.ACTION_UP: //отпускание
                             int clickedPosition = rv.getChildAdapterPosition(clickedChild);
-                            if(clickedChild.getX()<-250)
+                            if (clickedChild.getX() < -250)
                                 onItemSwipe(rv, clickedChild, clickedPosition, true);
                             clickedChild.setX(oldX);
                             clickedChild.setAlpha(1);
@@ -143,14 +144,6 @@ public class MainActivity extends AppCompatActivity
                     Adapter2.notifyItemRemoved(position);
                     NewList.remove(position);
                     //Удалить из бд
-                } else {
-//                    ClassNewInit Content = NewList.get(position);
-//
-//                    Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
-//                    intent.putExtra(EXTRA_MESSAGE, Content.getId());
-//                    intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
-//                    intent.putExtra(EXTRA_MESSAGE3, My_ID);
-//                    startActivity(intent);
                 }
             }
         });
