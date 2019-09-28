@@ -57,74 +57,10 @@ public class MainActivity extends AppCompatActivity
         final InitOldAdapter Adapter = new InitOldAdapter(this, OldList);
 
         oldRecyclerView.setAdapter(Adapter); //Заполнение
-        oldRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        oldRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
 
         oldRecyclerView.addOnItemTouchListener(new RecyclerOldClickListener(this) { //Проверка свайпа
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-            }
 
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                switch (e.getAction()) {
-                    case MotionEvent.ACTION_DOWN: //первое касание
-                        startX = e.getX();
-                        break;
-                    case MotionEvent.ACTION_UP: //отпускание
-                        float stopX = e.getX();
-                        if (stopX - startX > 30.f) {
-                            View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
-                            if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
-                                int clickedPosition = rv.getChildAdapterPosition(clickedChild);
-                                if (clickedPosition != RecyclerView.NO_POSITION) {
-                                    onItemSwipe(rv, clickedChild, clickedPosition, true);
-                                    return true;
-                                }
-                            }
-                        } else if (startX == stopX) {
-                            View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
-                            if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
-                                int clickedPosition = rv.getChildAdapterPosition(clickedChild);
-                                if (clickedPosition != RecyclerView.NO_POSITION) {
-                                    onItemSwipe(rv, clickedChild, clickedPosition, false);
-                                    return true;
-                                }
-                            }
-                        }
-                        break;
-                }
-                return false;
-            }
-
-            @Override
-            public void onItemSwipe(RecyclerView recyclerView, View itemView, int position, boolean isDelete) {
-                if (isDelete) {
-                    Adapter.notifyItemRemoved(position);
-                    OldList.remove(position);
-                    //Удалить из бд
-                } else {
-//                    ClassNewInit Content = NewList.get(position);
-//
-//                    Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
-//                    intent.putExtra(EXTRA_MESSAGE, Content.getId());
-//                    intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
-//                    intent.putExtra(EXTRA_MESSAGE3, My_ID);
-//                    startActivity(intent);
-                }
-            }
-        });
-
-        NewList.add(new ClassNewInit(1, "Инициатива 1", "Описание инициативы 1"));
-        NewList.add(new ClassNewInit(2, "Инициатива 2", "Описание инициативы 2"));
-        NewList.add(new ClassNewInit(3, "Инициатива 3", "Описание инициативы 3"));
-        final InitNewAdapter Adapter2 = new InitNewAdapter(this, NewList);
-        Adapter2.notifyDataSetChanged();
-
-        final RecyclerView newRecyclerView = findViewById(R.id.recyclerNew);
-        newRecyclerView.setAdapter(Adapter2); //Заполнение
-        newRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        newRecyclerView.addOnItemTouchListener(new RecyclerNewClickListener(this) {
             @Override
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
             }
@@ -139,6 +75,74 @@ public class MainActivity extends AppCompatActivity
 //                intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
 //                intent.putExtra(EXTRA_MESSAGE3, My_ID);
 //                startActivity(intent);
+            }
+        });
+///1243123465789
+        NewList.add(new ClassNewInit(1, "Инициатива 1", "Описание инициативы 1"));
+        NewList.add(new ClassNewInit(2, "Инициатива 2", "Описание инициативы 2"));
+        NewList.add(new ClassNewInit(3, "Инициатива 3", "Описание инициативы 3"));
+        final InitNewAdapter Adapter2 = new InitNewAdapter(this, NewList);
+        Adapter2.notifyDataSetChanged();
+
+        final RecyclerView newRecyclerView = findViewById(R.id.recyclerNew);
+        newRecyclerView.setAdapter(Adapter2); //Заполнение
+        newRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        newRecyclerView.addOnItemTouchListener(new RecyclerNewClickListener(this) {
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            }
+
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_DOWN: //первое касание
+                        startX = e.getX();
+                        break;
+                    case MotionEvent.ACTION_UP: //отпускание
+                        float stopX = e.getX();
+                        if (stopX - startX > 30.f || startX - stopX > 30.f) {
+                            View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
+                            if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
+                                int clickedPosition = rv.getChildAdapterPosition(clickedChild);
+                                if (clickedPosition != RecyclerView.NO_POSITION) {
+                                    onItemSwipe(rv, clickedChild, clickedPosition,true);
+                                    return true;
+                                }
+                            }
+                        } else
+                        if (startX == stopX) {
+                            View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
+                            if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
+                                int clickedPosition = rv.getChildAdapterPosition(clickedChild);
+                                if (clickedPosition != RecyclerView.NO_POSITION) {
+                                    onItemSwipe(rv, clickedChild, clickedPosition,false);
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+                }
+                return false;
+            }
+
+            @Override
+            public void onItemSwipe(RecyclerView recyclerView, View itemView, int position, boolean isDelete) {
+                if (isDelete) {
+                    Adapter2.notifyItemRemoved(position);
+                    NewList.remove(position);
+                    //Удалить из бд
+                } else
+                {
+//                    ClassNewInit Content = NewList.get(position);
+//
+//                    Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
+//                    intent.putExtra(EXTRA_MESSAGE, Content.getId());
+//                    intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
+//                    intent.putExtra(EXTRA_MESSAGE3, My_ID);
+//                    startActivity(intent);
+                }
             }
         });
         //Получить список новых инициатив

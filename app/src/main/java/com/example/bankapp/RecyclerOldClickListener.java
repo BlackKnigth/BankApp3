@@ -23,8 +23,23 @@ public abstract class RecyclerOldClickListener implements RecyclerView.OnItemTou
     }
 
     @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        if (gestureDetector.onTouchEvent(e)) {
+            View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
+            if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
+                int clickedPosition = rv.getChildAdapterPosition(clickedChild);
+                if (clickedPosition != RecyclerView.NO_POSITION) {
+                    onItemClick(rv, clickedChild, clickedPosition);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
     }
 
-    public abstract void onItemSwipe(RecyclerView recyclerView, View itemView, int position, boolean isDelete);
+    public abstract void onItemClick(RecyclerView recyclerView, View itemView, int position);
 }
