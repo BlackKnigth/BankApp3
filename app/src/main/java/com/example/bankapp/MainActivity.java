@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.core.view.GravityCompat;
@@ -29,6 +30,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     List<ClassOldInit> OldList = new ArrayList<>();
+    List<ClassNewInit> NewList = new ArrayList<>();
+    float startX = 0.f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +56,76 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Получить список старых инициатив
-        final RecyclerView oldRecyclerView =  findViewById(R.id.recyclerOld);
+        final RecyclerView oldRecyclerView = findViewById(R.id.recyclerOld);
         OldList.add(new ClassOldInit(1, "Инициатива 1", "Описание инициативы 1"));
         OldList.add(new ClassOldInit(1, "Инициатива 2", "Описание инициативы 2"));
         OldList.add(new ClassOldInit(1, "Инициатива 3", "Описание инициативы 3"));
-        InitAdapter Adapter = new InitAdapter(this, OldList, true);
-        oldRecyclerView.setAdapter(Adapter);
-        oldRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this) {
+        final InitOldAdapter Adapter = new InitOldAdapter(this, OldList);
+        oldRecyclerView.setAdapter(Adapter); //Заполнение
+
+        oldRecyclerView.addOnItemTouchListener(new RecyclerOldClickListener(this) { //Проверка свайпа
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            }
+
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_DOWN: //первое касание
+                        startX = e.getX();
+                        break;
+                    case MotionEvent.ACTION_UP: //отпускание
+                        float stopX = e.getX();
+                        if (stopX - startX > 30.f) {
+                            View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
+                            if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
+                                int clickedPosition = rv.getChildAdapterPosition(clickedChild);
+                                if (clickedPosition != RecyclerView.NO_POSITION) {
+                                    onItemSwipe(rv, clickedChild, clickedPosition,true);
+                                    return true;
+                                }
+                            }
+                        } else
+                            if (startX == stopX) {
+                                View clickedChild = rv.findChildViewUnder(e.getX(), e.getY());
+                                if (clickedChild != null && !clickedChild.dispatchTouchEvent(e)) {
+                                    int clickedPosition = rv.getChildAdapterPosition(clickedChild);
+                                    if (clickedPosition != RecyclerView.NO_POSITION) {
+                                        onItemSwipe(rv, clickedChild, clickedPosition,false);
+                                        return true;
+                                    }
+                                }
+                        }
+                        break;
+                }
+                return false;
+            }
+
+            @Override
+            public void onItemSwipe(RecyclerView recyclerView, View itemView, int position, boolean isDelete) {
+                if (isDelete) {
+                    Adapter.notifyItemRemoved(position);
+                    OldList.remove(position);
+                    //Удалить из бд
+                } else
+                {
+                    ClassNewInit Content = NewList.get(position);
+
+                    Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
+                    intent.putExtra(EXTRA_MESSAGE, Content.getId());
+                    intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
+                    intent.putExtra(EXTRA_MESSAGE3, My_ID);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        NewList.add(new ClassNewInit(1, "Инициатива 1", "Описание инициативы 1"));
+        NewList.add(new ClassNewInit(2, "Инициатива 2", "Описание инициативы 2"));
+        NewList.add(new ClassNewInit(3, "Инициатива 3", "Описание инициативы 3"));
+        final InitOldAdapter Adapter2 = new InitOldAdapter(this, OldList);
+        final RecyclerView newRecyclerView = findViewById(R.id.recyclerNew);
+        newRecyclerView.addOnItemTouchListener(new RecyclerNewClickListener(this) {
             @Override
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
             }
@@ -67,21 +133,17 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
 
-                ClassOldInit Init = OldList.get(position);
+                ClassNewInit Content = NewList.get(position);
 
                 Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, Init.getId());
-                intent.putExtra(EXTRA_MESSAGE2, Init.getUsername());
-                intent.putExtra(EXTRA_MESSAGE3, );
+                intent.putExtra(EXTRA_MESSAGE, Content.getId());
+                intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
+                intent.putExtra(EXTRA_MESSAGE3, My_ID);
                 startActivity(intent);
             }
         });
-
-        final RecyclerView newRecyclerView =  findViewById(R.id.recyclerNew);
-
         //Получить список новых инициатив
-        List
-        CatAdapter = new InitAdapter(this, UserList);
+        InitNewAdapter CatAdapter = new InitNewAdapter(this, NewList);
         oldRecyclerView.setAdapter(CatAdapter);
     }
 
@@ -124,7 +186,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_main) {
-            // Handle the camera action
+
         } else if (id == R.id.nav_history) {
 
         } else if (id == R.id.nav_about) {
