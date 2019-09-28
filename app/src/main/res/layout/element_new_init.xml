@@ -9,7 +9,7 @@
     android:layout_marginEnd="30dp"
     android:layout_marginBottom="30dp"
     android:orientation="vertical"
-    android:background="@drawable/splitline">>
+    android:background="@drawable/splitline">
 
     <TextView
         android:id="@+id/newName"
@@ -29,5 +29,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:text="@string/init_new_desc"
-        android:textSize="18sp" />
+        android:textSize="18sp">
+    </TextView>
+
 </LinearLayout>
