@@ -20,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
@@ -58,10 +59,12 @@ public class MainActivity extends AppCompatActivity
         //Получить список старых инициатив
         final RecyclerView oldRecyclerView = findViewById(R.id.recyclerOld);
         OldList.add(new ClassOldInit(1, "Инициатива 1", "Описание инициативы 1"));
-        OldList.add(new ClassOldInit(1, "Инициатива 2", "Описание инициативы 2"));
-        OldList.add(new ClassOldInit(1, "Инициатива 3", "Описание инициативы 3"));
+        OldList.add(new ClassOldInit(2, "Инициатива 2", "Описание инициативы 2"));
+        OldList.add(new ClassOldInit(3, "Инициатива 3", "Описание инициативы 3"));
         final InitOldAdapter Adapter = new InitOldAdapter(this, OldList);
+
         oldRecyclerView.setAdapter(Adapter); //Заполнение
+        oldRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
 
         oldRecyclerView.addOnItemTouchListener(new RecyclerOldClickListener(this) { //Проверка свайпа
             @Override
@@ -109,13 +112,13 @@ public class MainActivity extends AppCompatActivity
                     //Удалить из бд
                 } else
                 {
-                    ClassNewInit Content = NewList.get(position);
-
-                    Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
-                    intent.putExtra(EXTRA_MESSAGE, Content.getId());
-                    intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
-                    intent.putExtra(EXTRA_MESSAGE3, My_ID);
-                    startActivity(intent);
+//                    ClassNewInit Content = NewList.get(position);
+//
+//                    Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
+//                    intent.putExtra(EXTRA_MESSAGE, Content.getId());
+//                    intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
+//                    intent.putExtra(EXTRA_MESSAGE3, My_ID);
+//                    startActivity(intent);
                 }
             }
         });
@@ -123,8 +126,13 @@ public class MainActivity extends AppCompatActivity
         NewList.add(new ClassNewInit(1, "Инициатива 1", "Описание инициативы 1"));
         NewList.add(new ClassNewInit(2, "Инициатива 2", "Описание инициативы 2"));
         NewList.add(new ClassNewInit(3, "Инициатива 3", "Описание инициативы 3"));
-        final InitOldAdapter Adapter2 = new InitOldAdapter(this, OldList);
+        final InitNewAdapter Adapter2 = new InitNewAdapter(this, NewList);
+        Adapter2.notifyDataSetChanged();
+
         final RecyclerView newRecyclerView = findViewById(R.id.recyclerNew);
+        newRecyclerView.setAdapter(Adapter2); //Заполнение
+        newRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         newRecyclerView.addOnItemTouchListener(new RecyclerNewClickListener(this) {
             @Override
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
@@ -133,18 +141,16 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
 
-                ClassNewInit Content = NewList.get(position);
-
-                Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, Content.getId());
-                intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
-                intent.putExtra(EXTRA_MESSAGE3, My_ID);
-                startActivity(intent);
+//                ClassNewInit Content = NewList.get(position);
+//
+//                Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
+//                intent.putExtra(EXTRA_MESSAGE, Content.getId());
+//                intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
+//                intent.putExtra(EXTRA_MESSAGE3, My_ID);
+//                startActivity(intent);
             }
         });
         //Получить список новых инициатив
-        InitNewAdapter CatAdapter = new InitNewAdapter(this, NewList);
-        oldRecyclerView.setAdapter(CatAdapter);
     }
 
     @Override
