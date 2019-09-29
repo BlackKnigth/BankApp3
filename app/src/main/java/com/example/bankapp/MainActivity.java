@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,18 +19,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    List<ClassOldInit> OldList = new ArrayList<>();
-    List<ClassNewInit> NewList = new ArrayList<>();
-    float startX = 0.f;
-    float oldX = 0.f;
-
-
+    private List<ClassOldInit> OldList = new ArrayList<>();
+    private ClassOldInit oldInit;
+    private List<ClassNewInit> NewList = new ArrayList<>();
+    private ClassNewInit newInit;
+    private float startX = 0.f;
+    private float oldX = 0.f;
+    private int USER_ID = 1;
+    private DatabaseReference mDatabaseReference;
+    private RecyclerView oldRecyclerView;
+    private RecyclerView newRecyclerView;
+    private InitNewAdapter Adapter2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,15 +63,11 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Получить список старых инициатив
-        final RecyclerView oldRecyclerView = findViewById(R.id.recyclerOld);
-        OldList.add(new ClassOldInit(1, "Инициатива 1", "Описание инициативы 1"));
-        OldList.add(new ClassOldInit(2, "Инициатива 2", "Описание инициативы 2"));
-        OldList.add(new ClassOldInit(3, "Инициатива 3", "Описание инициативы 3"));
-        final InitOldAdapter Adapter = new InitOldAdapter(this, OldList);
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference();
 
-        oldRecyclerView.setAdapter(Adapter); //Заполнение
-        oldRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        oldRecyclerView = findViewById(R.id.recyclerOld);
+        newRecyclerView = findViewById(R.id.recyclerNew);
 
         oldRecyclerView.addOnItemTouchListener(new RecyclerOldClickListener(this) { //Проверка свайпа
 
@@ -73,22 +80,17 @@ public class MainActivity extends AppCompatActivity
 
 //                ClassNewInit Content = NewList.get(position);
 //
-//                Intent intent = new Intent(DialogActivity.this, ChatActivity.class);
+//                Intent intent = new Intent(MainActivity.this, TestActivity.class);
 //                intent.putExtra(EXTRA_MESSAGE, Content.getId());
 //                intent.putExtra(EXTRA_MESSAGE2, Content.getUsername());
 //                intent.putExtra(EXTRA_MESSAGE3, My_ID);
 //                startActivity(intent);
             }
         });
-///1243123465789
-        NewList.add(new ClassNewInit(1, "Инициатива 1", "Описание инициативы 1"));
-        NewList.add(new ClassNewInit(2, "Инициатива 2", "Описание инициативы 2"));
-        NewList.add(new ClassNewInit(3, "Инициатива 3", "Описание инициативы 3"));
-        final InitNewAdapter Adapter2 = new InitNewAdapter(this, NewList);
-        Adapter2.notifyDataSetChanged();
+        SearchMessage();
 
-        final RecyclerView newRecyclerView = findViewById(R.id.recyclerNew);
-        newRecyclerView.setAdapter(Adapter2); //Заполнение
+
+        oldRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         newRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         newRecyclerView.addOnItemTouchListener(new RecyclerNewClickListener(this) {
@@ -109,12 +111,12 @@ public class MainActivity extends AppCompatActivity
                             break;
                         case MotionEvent.ACTION_MOVE:
 
-                            clickedChild.setAlpha(1 - Math.abs(startX - e.getX()) / 250);
+                            clickedChild.setAlpha(1 - Math.abs(startX - e.getX()) / 250.f);
                             clickedChild.setX(oldX - (startX - e.getX()));
                             break;
                         case MotionEvent.ACTION_UP: //отпускание
                             int clickedPosition = rv.getChildAdapterPosition(clickedChild);
-                            if (clickedChild.getX() < -250)
+                            if (clickedChild.getX() < -250.f)
                                 onItemSwipe(rv, clickedChild, clickedPosition, true);
                             clickedChild.setX(oldX);
                             clickedChild.setAlpha(1);
@@ -148,6 +150,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
         //Получить список новых инициатив
+
+
+
     }
 
     @Override
@@ -209,5 +214,45 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void SearchMessage(){
+        mDatabaseReference.child("postTest")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            oldInit = postSnapshot.getValue(ClassOldInit.class);
+                            OldList.add(oldInit);
+                        }
+                        InitOldAdapter adapter = new InitOldAdapter(MainActivity.this, OldList);
+                        adapter.notifyDataSetChanged();
+                        oldRecyclerView.setAdapter(adapter);
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+
+        mDatabaseReference.child("currentTest")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            newInit = postSnapshot.getValue(ClassNewInit.class);
+                            NewList.add(newInit);
+                        }
+                        Adapter2 = new InitNewAdapter(MainActivity.this, NewList);
+                        Adapter2.notifyDataSetChanged();
+                        oldRecyclerView.setAdapter(Adapter2);
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
     }
 }

@@ -1,26 +1,53 @@
 package com.example.bankapp;
 
+import java.util.List;
+
 public class ClassNewInit {
-    private int id;
     private String name;
-    private String descript;
+    private String descr;
+    private int count;
+    private List<Question> q;
 
     public String getName() {
         return name;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getDescript() {
-        return descript;
+    public String getDescr() {
+        return descr;
     }
 
 
-    public ClassNewInit(int id, String name, String descript) {
-        this.id = id;
+    public ClassNewInit(String _name, String _descr, Integer _count, List<Question> q) {
+        name = _name;
+        descr = _descr;
+        count = _count;
+        this.q = q;
+    }
+
+    public void setName(String name) {
         this.name = name;
-        this.descript = descript;
+    }
+
+    public void setDescr(String descr) {
+        this.descr = descr;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public ClassNewInit() {
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public List<Question> getQ() {
+        return q;
+    }
+
+    public void setQ(List<Question> q) {
+        this.q = q;
     }
 }

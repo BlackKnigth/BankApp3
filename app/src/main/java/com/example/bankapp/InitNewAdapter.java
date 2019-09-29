@@ -31,7 +31,7 @@ public class InitNewAdapter extends RecyclerView.Adapter<InitNewAdapter.ViewHold
     public void onBindViewHolder(InitNewAdapter.ViewHolder holder, int position) {
         ClassNewInit Init = Initiative.get(position);
         holder.newName.setText(Init.getName());
-        holder.newDescr.setText(Init.getDescript());
+        holder.newDescr.setText(Init.getDescr());
     }
 
     @Override

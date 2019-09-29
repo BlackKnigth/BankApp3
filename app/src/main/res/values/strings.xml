@@ -21,4 +21,21 @@
     <string name="init_new_name">Имя инициативы</string>
     <string name="init_new_desc">Осуществить сбор мнений внешней аудитории об инициативе</string>
     <string name="communicate">Communicate</string>
+    <string name="numb_test">Вопрос 1</string>
+    <string name="quest_test">Осуществить сбор мнений внешней аудитории об инициативах</string>
+    <string name="skip_test">ПРОПУСТИТЬ</string>
+    <string name="next_quest">ДАЛЕЕ</string>
+    <string name="reg_info">Для дальнейшего прохождения необходимо войти или пройти регистрацию</string>
+    <string name="come_in">Авторизоваться</string>
+    <string name="reg_steps">Всего 2 шага</string>
+    <string name="reg_reg">Зарегестрироваться</string>
+    <string name="reg_sms">Введите смс-код</string>
+    <string name="reg_confirm">Подтвердить</string>
+    <string name="reg_again">Отправить смс ещё раз</string>
+    <string name="reg_mobile">Телефон</string>
+    <string name="reg_gos">Войти через госуслуги</string>
+    <string name="receive_sms">Получить смс</string>
+    <string name="next_test">СЛЕДУЮЩИЙ ОПРОС</string>
+    <string name="home">НА ГЛАВНУЮ</string>
+    <string name="edit_string">Сообщение</string>
 </resources>
